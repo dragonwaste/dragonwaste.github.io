@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta name="description" content="CYBERSPACE Blog — Mohammad Alaghawani threat intelligence write-ups and security research.">
+<title>INTELLIGENCE FEED — CYBERSPACE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&family=Big+Shoulders+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ═══════════════════════════════════════
+   BLOG THEME — RED PRIMARY
+   Background: deep blood dark
+   Accent: crimson red dominant
+   Secondary: teal from main site
+═══════════════════════════════════════ */
+:root{
+  --bg:    #0E0A0A;
+  --bg2:   #160D0D;
+  --bg3:   #1E1010;
+  --bg4:   #281515;
+  --text:  #EDE8E0;
+  --text2: #B8AFA8;
+  --text3: #7A706A;
+  --red:   #B83A2D;
+  --red2:  #D04535;
+  --red3:  #E55040;
+  --red-dim:rgba(184,58,45,.18);
+  --teal:  #5E8779;
+  --teal2: #7AA898;
+  --border:rgba(232,224,212,.07);
+  --border2:rgba(232,224,212,.18);
+  --glass-bg: rgba(30,16,16,.52);
+  --glass-bg2:rgba(22,11,11,.68);
+  --glass-bg3:rgba(14,7,7,.82);
+  --glass-border:rgba(184,58,45,.22);
+  --glass-shine:linear-gradient(135deg,rgba(184,58,45,.1) 0%,rgba(232,224,212,.04) 60%);
+  --glow-red:rgba(184,58,45,.25);
+  --glow-teal:rgba(94,135,121,.12);
+  --shadow:0 8px 32px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.3);
+  --shadow-h:0 20px 56px rgba(184,58,45,.2),0 4px 16px rgba(0,0,0,.4);
+  --display:'Big Shoulders Display','Barlow Condensed',sans-serif;
+  --syne:'Syne',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--syne);overflow-x:hidden;cursor:none}
+
+/* ── CURSOR — red ── */
+#cur{position:fixed;width:12px;height:12px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .12s;mix-blend-mode:screen}
+#cur-r{position:fixed;width:40px;height:40px;border:1.5px solid rgba(184,58,45,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .09s ease-out,top .09s ease-out}
+
+/* ── CANVAS ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── NAV — red tinted glass ── */
+nav{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  z-index:400;display:flex;align-items:center;
+  background:rgba(14,7,7,.82);
+  backdrop-filter:blur(28px) saturate(1.6);
+  -webkit-backdrop-filter:blur(28px) saturate(1.6);
+  border:1px solid var(--glass-border);
+  border-radius:100px;padding:.55rem 1rem;
+  box-shadow:var(--shadow),0 0 0 1px rgba(184,58,45,.08) inset;
+  width:min(820px,90vw);justify-content:space-between;
+}
+nav::before{content:'';position:absolute;inset:0;background:var(--glass-shine);border-radius:inherit;pointer-events:none}
+.nav-logo{font-family:var(--display);font-size:18px;font-weight:900;letter-spacing:.1em;color:var(--text);padding:0 .5rem;position:relative;z-index:1}
+.nav-logo em{color:var(--red3);font-style:normal}
+.nav-logo a{text-decoration:none;color:inherit;cursor:none}
+.nav-right{display:flex;gap:1.5rem;align-items:center;position:relative;z-index:1}
+.nav-right a{font-family:var(--syne);font-size:11px;font-weight:600;color:var(--text3);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;padding:.45rem .75rem;border-radius:100px;transition:color .2s,background .2s;cursor:none}
+.nav-right a:hover,.nav-right a.active{color:var(--text);background:rgba(184,58,45,.15)}
+.nav-badge{
+  font-family:var(--mono);font-size:8px;letter-spacing:.12em;
+  padding:4px 12px;border-radius:100px;
+  background:var(--red);color:#fff;
+  animation:navPulse 2s ease-in-out infinite;
+}
+@keyframes navPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,58,45,.4)}50%{box-shadow:0 0 0 6px rgba(184,58,45,0)}}
+
+/* ── HERO — full red bleed ── */
+.blog-hero{
+  min-height:100vh;
+  position:relative;overflow:hidden;
+  padding-top:80px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+/* Red atmospheric glow background */
+.blog-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%, rgba(184,58,45,.18) 0%, transparent 70%);
+  pointer-events:none;z-index:1;
+}
+.bh-meta{
+  position:absolute;top:88px;left:4rem;right:2rem;
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:9px;color:var(--text3);
+  letter-spacing:.18em;text-transform:uppercase;
+  opacity:0;animation:heroIn .6s .3s forwards;z-index:3;
+}
+.bh-meta-badge{
+  font-family:var(--mono);font-size:8px;letter-spacing:.14em;
+  padding:3px 10px;background:var(--red);color:#fff;border-radius:100px;
+  animation:navPulse 2.5s ease infinite;
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Giant red marquee title */
+.bh-marquee-wrap{
+  overflow:hidden;padding:1.5rem 0;
+  border-top:1px solid rgba(184,58,45,.3);
+  border-bottom:1px solid rgba(184,58,45,.3);
+  position:relative;z-index:3;
+  background:rgba(184,58,45,.04);
+}
+.bh-marquee{display:flex;gap:2rem;animation:marqMove 20s linear infinite;width:max-content}
+.bh-marquee:hover{animation-direction:reverse}
+.bh-mword{
+  font-family:var(--display);
+  font-size:clamp(80px,11vw,150px);
+  font-weight:900;line-height:.85;letter-spacing:-.04em;
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(184,58,45,.35);
+  white-space:nowrap;
+  transition:color .25s,-webkit-text-stroke .25s,text-shadow .25s;
+  cursor:none;padding:0 1rem;
+}
+.bh-mword:hover{
+  color:var(--red3);
+  -webkit-text-stroke:0;
+  text-shadow:0 0 60px rgba(184,58,45,.6);
+}
+.bh-mdot{font-family:var(--display);font-size:80px;color:var(--red);display:inline-flex;align-items:center;opacity:.6}
+@keyframes marqMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* Bottom strip */
+.bh-bottom{
+  padding:2.5rem 4rem 3rem;
+  display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:end;
+  background:linear-gradient(0deg,var(--bg) 0%,rgba(14,10,10,.6) 60%,transparent 100%);
+  opacity:0;animation:heroIn .8s .9s forwards;
+  position:relative;z-index:3;
+}
+.bh-sub{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--red);margin-bottom:.75rem;opacity:.8}
+.bh-chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.bh-chip{
+  font-family:var(--syne);font-size:9px;font-weight:600;letter-spacing:.1em;
+  padding:5px 12px;border:1px solid rgba(184,58,45,.3);
+  background:rgba(184,58,45,.06);
+  backdrop-filter:blur(12px);border-radius:100px;
+  color:var(--text3);text-transform:uppercase;cursor:none;
+  transition:all .2s;
+}
+.bh-chip:hover,.bh-chip.active{
+  border-color:var(--red3);color:var(--text);
+  background:rgba(184,58,45,.2);
+  box-shadow:0 0 12px rgba(184,58,45,.2);
+}
+.bh-count{text-align:right}
+.bh-count-num{font-family:var(--display);font-size:56px;font-weight:900;color:var(--red);line-height:1;letter-spacing:-.04em}
+.bh-count-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.16em}
+
+/* ── BLOG SECTION ── */
+.blog-section{padding:3rem 4rem;position:relative;z-index:2}
+
+/* Red ambient glow on section */
+.blog-section::before{
+  content:'';position:absolute;
+  width:600px;height:400px;
+  background:radial-gradient(ellipse, rgba(184,58,45,.06) 0%, transparent 70%);
+  top:0;left:50%;transform:translateX(-50%);pointer-events:none;
+}
+
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+/* Glass card — red tinted */
+.blog-card{
+  background:var(--glass-bg);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--glass-border);
+  border-radius:12px;padding:2rem;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .3s;
+  cursor:none;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.blog-card::before{content:'';position:absolute;inset:0;background:var(--glass-shine);border-radius:inherit;pointer-events:none}
+/* Red accent stripe top */
+.blog-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),transparent);opacity:.5}
+.blog-card>*{position:relative;z-index:1}
+.blog-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-h);
+  border-color:rgba(184,58,45,.5);
+}
+/* Featured — full red gradient */
+.blog-card.featured{
+  grid-column:span 2;
+  background:linear-gradient(135deg,rgba(184,58,45,.25) 0%,rgba(100,20,12,.5) 100%);
+  border-color:rgba(184,58,45,.4);
+  box-shadow:0 8px 40px rgba(184,58,45,.2);
+}
+.blog-card.featured::before{background:linear-gradient(135deg,rgba(184,58,45,.12) 0%,transparent 50%)}
+.blog-card.featured:hover{box-shadow:0 20px 60px rgba(184,58,45,.35)}
+.blog-card.wide{grid-column:span 3;display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:center;padding:2rem 2.5rem}
+
+.bc-cat{font-family:var(--syne);font-size:9px;font-weight:700;color:var(--red3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.4rem}
+.bc-date{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.12em;margin-bottom:.75rem}
+.bc-title{font-family:var(--display);font-size:26px;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:.75rem;letter-spacing:-.03em}
+.featured .bc-title{font-size:34px}
+.wide .bc-title{font-size:28px}
+.bc-excerpt{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:1.25rem}
+.featured .bc-excerpt{font-size:14px;color:var(--text2)}
+.bc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:1.25rem}
+.bc-tag{font-family:var(--mono);font-size:7px;letter-spacing:.1em;padding:2px 7px;border:1px solid rgba(184,58,45,.25);border-radius:100px;color:rgba(184,58,45,.7);text-transform:uppercase;background:rgba(184,58,45,.06)}
+.bc-lnk{font-family:var(--syne);font-size:10px;font-weight:600;color:var(--red3);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:gap .2s,color .2s}
+.bc-lnk:hover{gap:10px;color:var(--text)}
+.bc-num{position:absolute;bottom:-18px;right:.75rem;font-family:var(--display);font-size:88px;font-weight:900;opacity:.05;line-height:1;pointer-events:none;letter-spacing:-.04em;color:var(--red)}
+.bc-coming{
+  position:absolute;top:1rem;right:1rem;
+  font-family:var(--syne);font-size:8px;font-weight:700;letter-spacing:.14em;
+  padding:3px 9px;background:rgba(184,58,45,.15);
+  border:1px solid rgba(184,58,45,.35);border-radius:100px;color:var(--red3);
+}
+
+/* Wide card right stats */
+.wide-meta{display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+.wide-stat .ws-val{font-family:var(--display);font-size:40px;font-weight:900;color:var(--red3);line-height:1;letter-spacing:-.03em}
+.wide-stat .ws-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.14em}
+
+/* ── NEWSLETTER — red themed ── */
+.newsletter{
+  background:linear-gradient(135deg,rgba(184,58,45,.12) 0%,rgba(14,7,7,.9) 100%);
+  backdrop-filter:blur(20px);
+  border-top:1px solid rgba(184,58,45,.2);
+  padding:5rem 4rem;position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+  overflow:hidden;
+}
+.newsletter::before{
+  content:'';position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(ellipse,rgba(184,58,45,.1) 0%,transparent 70%);
+  top:-100px;left:-100px;pointer-events:none;
+}
+.newsletter>*{position:relative;z-index:1}
+.nl-eyebrow{font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;opacity:.8}
+.nl-title{font-family:var(--display);font-size:52px;font-weight:900;color:var(--text);line-height:.92;margin-bottom:.75rem;letter-spacing:-.04em}
+.nl-sub{font-size:14px;line-height:1.8;color:var(--text2)}
+.nl-form{display:flex;margin-top:1.5rem}
+.nl-input{flex:1;background:rgba(184,58,45,.08);border:1px solid rgba(184,58,45,.3);border-right:none;border-radius:100px 0 0 100px;color:var(--text);font-family:var(--syne);font-size:12px;padding:.9rem 1.25rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.nl-input:focus{border-color:var(--red2);box-shadow:0 0 0 3px rgba(184,58,45,.15)}
+.nl-btn{background:var(--red);color:#fff;border:none;font-family:var(--syne);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.9rem 1.5rem;cursor:none;border-radius:0 100px 100px 0;transition:background .2s,box-shadow .2s;flex-shrink:0}
+.nl-btn:hover{background:var(--red2);box-shadow:0 0 24px rgba(184,58,45,.4)}
+.nl-note{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-top:.75rem}
+
+/* ── FOOTER ── */
+footer{
+  background:rgba(10,5,5,.95);
+  border-top:1px solid rgba(184,58,45,.15);
+  padding:2rem 4rem;position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem;
+}
+.ft-brand{font-family:var(--display);font-size:18px;font-weight:900;letter-spacing:.08em;color:var(--text)}
+.ft-brand em{color:var(--red3);font-style:normal}
+.ft-id{font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.14em;text-align:center}
+.ft-links{display:flex;gap:1.25rem;justify-content:flex-end}
+.ft-links a{font-family:var(--syne);font-size:10px;font-weight:600;color:var(--text3);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;cursor:none}
+.ft-links a:hover{color:var(--red3)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:960px){
+  nav{top:8px;width:95vw}
+  .blog-grid{grid-template-columns:1fr}
+  .blog-card.featured,.blog-card.wide{grid-column:auto}
+  .blog-card.wide{grid-template-columns:1fr}
+  .newsletter{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr;text-align:center}
+  .ft-links{justify-content:center}
+  .blog-section,.bh-bottom{padding-left:1.5rem;padding-right:1.5rem}
+  .bh-meta{display:none}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-r"></div>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo"><a href="index.html">CYBER<em>SPACE</em></a></div>
+  <div class="nav-right">
+    <a href="index.html#about">About</a>
+    <a href="index.html#experience">Experience</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="blog.html" class="active">Blog</a>
+    <span class="nav-badge">INTEL FEED</span>
+  </div>
+</nav>
+
+<div class="blog-hero">
+  <div class="bh-meta">
+    <span>CYBERSPACE / INTELLIGENCE FEED / 2026</span>
+    <span class="bh-meta-badge">LIVE</span>
+    <span>THREAT RESEARCH PORTAL</span>
+  </div>
+
+  <div class="bh-marquee-wrap">
+    <div class="bh-marquee">
+      <span class="bh-mword">INTELLIGENCE</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">FEED</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">RESEARCH</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">WRITE-UPS</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">THREAT</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">ANALYSIS</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">INTELLIGENCE</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">FEED</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">RESEARCH</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">WRITE-UPS</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">THREAT</span><span class="bh-mdot">&middot;</span>
+      <span class="bh-mword">ANALYSIS</span><span class="bh-mdot">&middot;</span>
+    </div>
+  </div>
+
+  <div class="bh-bottom">
+    <div>
+      <div class="bh-sub">FILTER BY CATEGORY</div>
+      <div class="bh-chips">
+        <span class="bh-chip active" data-cat="all">All</span>
+        <span class="bh-chip" data-cat="ad">Active Directory</span>
+        <span class="bh-chip" data-cat="soc">SOC &amp; Detection</span>
+        <span class="bh-chip" data-cat="malware">Malware</span>
+        <span class="bh-chip" data-cat="cloud">Cloud</span>
+        <span class="bh-chip" data-cat="tools">Tools &amp; Dev</span>
+        <span class="bh-chip" data-cat="ctf">CTF</span>
+      </div>
+    </div>
+    <div class="bh-count">
+      <div class="bh-count-num">9</div>
+      <div class="bh-count-lbl">WRITE-UPS PLANNED</div>
+    </div>
+  </div>
+</div>
+
+<div class="blog-section">
+  <div class="blog-grid" id="blogGrid">
+
+    <div class="blog-card featured reveal" data-cat="ad">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">Active Directory &middot; Offensive</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">Kerberoasting to DCSync: Full AD Compromise</div>
+      <div class="bc-excerpt">From initial SPN enumeration through Rubeus to full domain compromise via DCSync. Step-by-step with defensive detections for each stage.</div>
+      <div class="bc-tags"><span class="bc-tag">Kerberos</span><span class="bc-tag">DCSync</span><span class="bc-tag">BloodHound</span><span class="bc-tag">Mimikatz</span></div>
+      <a href="#" class="bc-lnk">Read Write-up &#8594;</a>
+      <div class="bc-num">01</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="soc">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">SOC &middot; Detection Engineering</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">Sigma Rules That Actually Fire in Prod</div>
+      <div class="bc-excerpt">High-fidelity detection rules with under 1% false positive rates using real Splunk and ELK telemetry.</div>
+      <div class="bc-tags"><span class="bc-tag">Sigma</span><span class="bc-tag">Splunk</span><span class="bc-tag">ELK</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">02</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="tools">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">Tool Dev &middot; Network</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">NetScope: Building a PCAP Analyzer From Scratch</div>
+      <div class="bc-excerpt">Design decisions, Scapy internals, and anomaly detection logic behind NetScope.</div>
+      <div class="bc-tags"><span class="bc-tag">Python</span><span class="bc-tag">Scapy</span><span class="bc-tag">PCAP</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">03</div>
+    </div>
+
+    <div class="blog-card wide reveal" data-cat="malware">
+      <div>
+        <div class="bc-coming">COMING SOON</div>
+        <div class="bc-cat">Malware Research &middot; Simulation</div>
+        <div class="bc-date">2026</div>
+        <div class="bc-title">Inside the Ransomware Loop: Lifecycle Simulation</div>
+        <div class="bc-excerpt">Python-based ransomware simulator dissected. Encryption chains, orchestration logic, and SIEM signatures for each stage.</div>
+        <div class="bc-tags"><span class="bc-tag">Python</span><span class="bc-tag">Ransomware</span><span class="bc-tag">DFIR</span><span class="bc-tag">SIEM</span></div>
+        <a href="#" class="bc-lnk">Read Research &#8594;</a>
+      </div>
+      <div class="wide-meta">
+        <div class="wide-stat"><div class="ws-val">4</div><div class="ws-lbl">Attack Stages</div></div>
+        <div class="wide-stat"><div class="ws-val">3</div><div class="ws-lbl">Detection Rules</div></div>
+        <div class="wide-stat"><div class="ws-val">Lab</div><div class="ws-lbl">Controlled Env</div></div>
+      </div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="cloud">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">Cloud &middot; Azure</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">Azure AD: Abusing Managed Identities</div>
+      <div class="bc-excerpt">From a compromised VM to subscription-level access via misconfigured managed identities.</div>
+      <div class="bc-tags"><span class="bc-tag">Azure</span><span class="bc-tag">IAM</span><span class="bc-tag">Lateral Movement</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">05</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="tools">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">IR &middot; SOAR</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">SOC Automation with Shuffle SOAR</div>
+      <div class="bc-excerpt">Automated playbooks cutting mean time to respond from hours to minutes.</div>
+      <div class="bc-tags"><span class="bc-tag">Shuffle</span><span class="bc-tag">SOAR</span><span class="bc-tag">IR</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">06</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="soc">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">DFIR &middot; Windows</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">Detecting Pass-the-Hash with Event Logs</div>
+      <div class="bc-excerpt">Event IDs 4624, 4648, 4768 decoded. High-confidence PtH detection without endpoint agents.</div>
+      <div class="bc-tags"><span class="bc-tag">PtH</span><span class="bc-tag">Event Logs</span><span class="bc-tag">Windows</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">07</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="ctf">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">CTF &middot; HTB / THM</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">HTB / TryHackMe Write-up Collection</div>
+      <div class="bc-excerpt">Walkthroughs for rooms and boxes I've rooted. Methodology-focused, not just steps.</div>
+      <div class="bc-tags"><span class="bc-tag">HTB</span><span class="bc-tag">THM</span><span class="bc-tag">OSCP Prep</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">08</div>
+    </div>
+
+    <div class="blog-card reveal" data-cat="soc">
+      <div class="bc-coming">COMING SOON</div>
+      <div class="bc-cat">Network &middot; Threat Hunting</div>
+      <div class="bc-date">2026</div>
+      <div class="bc-title">Hunting C2 Traffic With Zeek + MITRE ATT&amp;CK</div>
+      <div class="bc-excerpt">Using Zeek network telemetry and MITRE C2 techniques to build behavioral-based detection at scale.</div>
+      <div class="bc-tags"><span class="bc-tag">Zeek</span><span class="bc-tag">C2</span><span class="bc-tag">Network</span><span class="bc-tag">MITRE</span></div>
+      <a href="#" class="bc-lnk">Read &#8594;</a>
+      <div class="bc-num">09</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="newsletter reveal">
+  <div>
+    <div class="nl-eyebrow">&#9632; INTELLIGENCE SIGNAL</div>
+    <div class="nl-title">STAY<br>INFORMED</div>
+    <div class="nl-sub">Get notified when new write-ups, threat research, and CTF walkthroughs drop. No spam — only signal.</div>
+  </div>
+  <div>
+    <div class="nl-form">
+      <input class="nl-input" id="nlInput" type="email" placeholder="your@email.com" autocomplete="email">
+      <button class="nl-btn" id="nlBtn">Subscribe &#8594;</button>
+    </div>
+    <div class="nl-note" id="nlStatus">Your email is only used for notifications. Unsubscribe anytime.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="ft-brand">CYBER<em>SPACE</em></div>
+  <div class="ft-id">INTELLIGENCE FEED &middot; MOHAMMAD ALAGHAWANI</div>
+  <div class="ft-links">
+    <a href="index.html">Home</a>
+    <a href="https://github.com/dragonwaste" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://linkedin.com/in/mohammad-alaghawani" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <a href="mailto:mohammadalaghawani5@gmail.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+setInterval(()=>{rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px'},14);
+
+// Reveal
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Filter
+function filterCards(cat){
+  document.querySelectorAll('.bh-chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===cat));
+  document.querySelectorAll('.blog-card').forEach(card=>{
+    const ok=cat==='all'||card.dataset.cat===cat;
+    card.style.opacity=ok?'1':'0.15';
+    card.style.pointerEvents=ok?'auto':'none';
+    card.style.transition='opacity .35s,transform .35s';
+  });
+}
+document.querySelectorAll('.bh-chip').forEach(chip=>chip.addEventListener('click',()=>filterCards(chip.dataset.cat)));
+
+// Marquee reverse on hover
+const marq=document.querySelector('.bh-marquee');
+if(marq){
+  marq.addEventListener('mouseenter',()=>marq.style.animationDirection='reverse');
+  marq.addEventListener('mouseleave',()=>marq.style.animationDirection='normal');
+}
+
+// Newsletter
+document.getElementById('nlBtn').addEventListener('click',()=>{
+  const v=document.getElementById('nlInput').value.trim();
+  const s=document.getElementById('nlStatus');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){s.style.color='var(--red3)';s.textContent='Please enter a valid email.';return}
+  s.style.color='var(--teal2)';s.textContent='Thanks! You will be notified when new posts go live.';
+  document.getElementById('nlInput').value='';
+});
+
+// ══════════════════════════════════════════════════
+// 3D BACKGROUND — CYBER + SPACE SCENE
+// Concept: Deep space with:
+//   1. Satellite / space station wireframe orbiting
+//   2. Data transmission beams (like cyber attacks from orbit)
+//   3. Earth wireframe globe below (target)
+//   4. Floating binary/hex debris field (asteroid belt of data)
+//   5. Pulsing red shield nodes (defense systems)
+//   6. Star field
+// All in red+dark palette matching the blog theme
+// ══════════════════════════════════════════════════
+const canvas=document.getElementById('bg-canvas');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x000000,0);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,3000);
+camera.position.set(0,2,22);
+
+// Colors — blog red theme
+const C_RED=0xB83A2D, C_RED2=0xD04535, C_DIM=0x3A1010, C_TEAL=0x5E8779, C_WHITE=0xEDE8E0;
+
+// ── 1. EARTH WIREFRAME GLOBE ──
+const EARTH_R=5.5;
+const eGroup=new THREE.Group();
+eGroup.position.set(0,-3,0);
+scene.add(eGroup);
+
+// Lat/lon grid
+const gridMat=new THREE.LineBasicMaterial({color:C_RED,transparent:true,opacity:.08});
+for(let lat=-80;lat<=80;lat+=20){
+  const pts=[],r2=Math.cos(lat*Math.PI/180)*EARTH_R,y2=Math.sin(lat*Math.PI/180)*EARTH_R;
+  for(let ln=0;ln<=360;ln+=5)pts.push(new THREE.Vector3(r2*Math.cos(ln*Math.PI/180),y2,r2*Math.sin(ln*Math.PI/180)));
+  eGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),gridMat));
+}
+for(let ln=0;ln<180;ln+=30){
+  const pts=[];
+  for(let lat=-90;lat<=90;lat+=4)pts.push(new THREE.Vector3(EARTH_R*Math.cos(lat*Math.PI/180)*Math.cos(ln*Math.PI/180),EARTH_R*Math.sin(lat*Math.PI/180),EARTH_R*Math.cos(lat*Math.PI/180)*Math.sin(ln*Math.PI/180)));
+  eGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),gridMat));
+}
+
+// Earth particle surface
+const ePts=new Float32Array(4000*3),eCols=new Float32Array(4000*3);
+for(let i=0;i<4000;i++){
+  const phi=Math.acos(1-2*(i+.5)/4000),theta=Math.PI*(1+Math.sqrt(5))*i;
+  ePts[i*3]=EARTH_R*Math.sin(phi)*Math.cos(theta);
+  ePts[i*3+1]=EARTH_R*Math.cos(phi);
+  ePts[i*3+2]=EARTH_R*Math.sin(phi)*Math.sin(theta);
+  const r=Math.random();
+  if(r<.05){eCols[i*3]=.72;eCols[i*3+1]=.22;eCols[i*3+2]=.18;}
+  else{eCols[i*3]=.22;eCols[i*3+1]=.12;eCols[i*3+2]=.12;}
+}
+const eGeo=new THREE.BufferGeometry();
+eGeo.setAttribute('position',new THREE.BufferAttribute(ePts,3));
+eGeo.setAttribute('color',new THREE.BufferAttribute(eCols,3));
+eGroup.add(new THREE.Points(eGeo,new THREE.PointsMaterial({size:.055,vertexColors:true,transparent:true,opacity:.7})));
+
+// ── 2. SATELLITE — wireframe box orbiting ──
+const satGroup=new THREE.Group();
+scene.add(satGroup);
+
+// Main body
+const satBody=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(.8,.4,.4)),
+  new THREE.LineBasicMaterial({color:C_RED2,transparent:true,opacity:.7})
+);
+satGroup.add(satBody);
+// Solar panels
+const panelL=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(1.2,.05,.5)),
+  new THREE.LineBasicMaterial({color:C_RED,transparent:true,opacity:.5})
+);
+panelL.position.x=-1.0;satGroup.add(panelL);
+const panelR=panelL.clone();panelR.position.x=1.0;satGroup.add(panelR);
+// Antenna dish
+const dish=new THREE.Mesh(
+  new THREE.RingGeometry(.15,.2,16),
+  new THREE.MeshBasicMaterial({color:C_RED2,transparent:true,opacity:.5,side:THREE.DoubleSide})
+);
+dish.position.set(.3,.3,0);dish.rotation.x=Math.PI/3;satGroup.add(dish);
+
+// ── 3. SPACE STATION — second orbiting object ──
+const stationGroup=new THREE.Group();
+scene.add(stationGroup);
+// Core
+const stCore=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.CylinderGeometry(.15,.15,1.2,6)),
+  new THREE.LineBasicMaterial({color:C_WHITE,transparent:true,opacity:.25})
+);
+stationGroup.add(stCore);
+// Ring
+const stRing=new THREE.Mesh(
+  new THREE.TorusGeometry(.6,.04,4,24),
+  new THREE.MeshBasicMaterial({color:C_RED,transparent:true,opacity:.3})
+);
+stationGroup.add(stRing);
+// Spokes
+for(let i=0;i<4;i++){
+  const spoke=new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(Math.cos(i*Math.PI/2)*.6,0,Math.sin(i*Math.PI/2)*.6)]),
+    new THREE.LineBasicMaterial({color:C_RED,transparent:true,opacity:.2})
+  );
+  stationGroup.add(spoke);
+}
+
+// ── 4. ATTACK BEAMS from satellite to earth ──
+const beamGroup=new THREE.Group();
+scene.add(beamGroup);
+const beams=[];
+const targetPts=[
+  [37.6,55.7],[-74,40.7],[-0.1,51.5],[103.8,1.4],[28.9,41.0],[-43.2,-22.9]
+];
+targetPts.forEach(([lo,la])=>{
+  const phi=(90-la)*Math.PI/180,theta=(lo+180)*Math.PI/180;
+  const tx=EARTH_R*Math.sin(phi)*Math.cos(theta)-0;
+  const ty=EARTH_R*Math.cos(phi)-3;
+  const tz=EARTH_R*Math.sin(phi)*Math.sin(theta);
+  // Arc from satellite to earth surface
+  const pts=[];
+  const steps=20;
+  for(let i=0;i<=steps;i++){
+    const t=i/steps;
+    // Start from satellite (will be updated in loop), end at earth target
+    pts.push(new THREE.Vector3(
+      tx*t,
+      ty*t + Math.sin(t*Math.PI)*3,
+      tz*t
+    ));
+  }
+  const ln=new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(pts),
+    new THREE.LineBasicMaterial({color:C_RED2,transparent:true,opacity:0})
+  );
+  beamGroup.add(ln);
+  beams.push({ln,phase:Math.random()*Math.PI*2,speed:.3+Math.random()*.5,tx,ty,tz});
+});
+
+// ── 5. DEFENSE NODES on earth surface ──
+const defGroup=new THREE.Group();
+defGroup.position.set(0,-3,0);
+scene.add(defGroup);
+const defNodes=[];
+[[37.6,55.7],[-74,40.7],[116.4,39.9],[139.7,35.7],[-0.1,51.5]].forEach(([lo,la])=>{
+  const phi=(90-la)*Math.PI/180,theta=(lo+180)*Math.PI/180;
+  const x=EARTH_R*Math.sin(phi)*Math.cos(theta),y=EARTH_R*Math.cos(phi),z=EARTH_R*Math.sin(phi)*Math.sin(theta);
+  const dot=new THREE.Mesh(new THREE.SphereGeometry(.1,8,8),new THREE.MeshBasicMaterial({color:C_TEAL}));
+  dot.position.set(x,y,z);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.015,4,24),new THREE.MeshBasicMaterial({color:C_TEAL,transparent:true,opacity:.6}));
+  ring.position.set(x,y,z);ring.lookAt(0,0,0);
+  defGroup.add(dot,ring);
+  defNodes.push({dot,ring,phase:Math.random()*Math.PI*2});
+});
+
+// ── 6. DATA DEBRIS FIELD (hex/binary asteroids) ──
+const debrisGroup=new THREE.Group();
+scene.add(debrisGroup);
+const debris=[];
+for(let i=0;i<60;i++){
+  const size=.04+Math.random()*.12;
+  const shapes=[
+    new THREE.BoxGeometry(size,size,size),
+    new THREE.OctahedronGeometry(size,0),
+    new THREE.TetrahedronGeometry(size,0),
+  ];
+  const geo=shapes[i%3];
+  const mesh=new THREE.LineSegments(
+    new THREE.EdgesGeometry(geo),
+    new THREE.LineBasicMaterial({color:i%3===0?C_RED:C_DIM,transparent:true,opacity:.15+Math.random()*.2})
+  );
+  // Spread in a belt around the scene
+  const angle=Math.random()*Math.PI*2;
+  const radius=9+Math.random()*6;
+  const height=(Math.random()-.5)*8;
+  mesh.position.set(Math.cos(angle)*radius,height,Math.sin(angle)*radius);
+  mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+  mesh.userData={rx:.002+Math.random()*.005,ry:.003+Math.random()*.006,angle,radius,height,speed:.001+Math.random()*.003};
+  debris.push(mesh);debrisGroup.add(mesh);
+}
+
+// ── 7. ORBIT RINGS ──
+function mkRing(r,c,op,rx,rz){
+  const m=new THREE.Mesh(new THREE.TorusGeometry(r,.005,2,120),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:op}));
+  m.rotation.x=rx;m.rotation.z=rz;return m;
+}
+const rings=[
+  mkRing(8,C_RED,.12,Math.PI/3,0),
+  mkRing(10,C_RED,.07,Math.PI/2.2,Math.PI/4),
+  mkRing(6.5,C_TEAL,.06,Math.PI/1.7,Math.PI/6),
+];
+rings.forEach(r=>scene.add(r));
+
+// ── 8. STAR FIELD — dense ──
+const starP=new Float32Array(5000*3);
+for(let i=0;i<5000*3;i++)starP[i]=(Math.random()-.5)*400;
+const starG=new THREE.BufferGeometry();starG.setAttribute('position',new THREE.BufferAttribute(starP,3));
+// Mix of white and red-tinted stars
+const starCols=new Float32Array(5000*3);
+for(let i=0;i<5000;i++){
+  const isRed=Math.random()<.08;
+  starCols[i*3]=isRed?.72:.85;starCols[i*3+1]=isRed?.22:.8;starCols[i*3+2]=isRed?.18:.75;
+}
+starG.setAttribute('color',new THREE.BufferAttribute(starCols,3));
+scene.add(new THREE.Points(starG,new THREE.PointsMaterial({size:.08,vertexColors:true,transparent:true,opacity:.6})));
+
+// ── ANIMATION ──
+let bT=0,bSY=0,bTS=0,bMX=0,bMY=0,bSMX=0,bSMY=0;
+window.addEventListener('scroll',()=>bTS=window.scrollY,{passive:true});
+document.addEventListener('mousemove',e=>{bMX=(e.clientX/innerWidth-.5)*2;bMY=(e.clientY/innerHeight-.5)*2});
+
+// Satellite orbit params
+const SAT_ORBIT_R=9, SAT_ORBIT_TILT=0.5;
+const ST_ORBIT_R=12, ST_ORBIT_TILT=0.8;
+
+(function loop(){
+  requestAnimationFrame(loop);bT+=.004;
+  bSY+=(bTS-bSY)*.05;bSMX+=(bMX-bSMX)*.03;bSMY+=(bMY-bSMY)*.03;
+  const sp=bSY/Math.max(document.body.scrollHeight-innerHeight,1);
+
+  // Earth slow rotation + mouse tilt
+  eGroup.rotation.y=bT*.06+bSMX*.1;
+  eGroup.rotation.x=bSMY*.06;
+  defGroup.rotation.y=eGroup.rotation.y;
+  defGroup.rotation.x=eGroup.rotation.x;
+
+  // Satellite orbits — elliptical
+  const satAngle=bT*.35;
+  satGroup.position.set(
+    Math.cos(satAngle)*SAT_ORBIT_R,
+    Math.sin(satAngle*SAT_ORBIT_TILT)*3,
+    Math.sin(satAngle)*SAT_ORBIT_R*.7
+  );
+  satGroup.rotation.y=satAngle;
+  satGroup.rotation.z=Math.sin(satAngle*.5)*.3;
+
+  // Space station — slower, different plane
+  const stAngle=bT*.18+Math.PI;
+  stationGroup.position.set(
+    Math.cos(stAngle)*ST_ORBIT_R,
+    Math.sin(stAngle*.3)*4+2,
+    Math.sin(stAngle)*ST_ORBIT_R*.8
+  );
+  stationGroup.rotation.y=bT*.5;
+  stRing.rotation.z=bT*.8;
+
+  // Attack beams pulse
+  beams.forEach(b=>{
+    const pulse=.5+.5*Math.sin(bT*b.speed+b.phase);
+    b.ln.material.opacity=pulse*.35;
+    // Update start point to satellite position
+    const pos=b.ln.geometry.attributes.position;
+    const sx=satGroup.position.x,sy=satGroup.position.y,sz=satGroup.position.z;
+    for(let i=0;i<=20;i++){
+      const t=i/20;
+      pos.array[i*3]  =sx*(1-t)+b.tx*t;
+      pos.array[i*3+1]=sy*(1-t)+b.ty*t + Math.sin(t*Math.PI)*3*(1-t);
+      pos.array[i*3+2]=sz*(1-t)+b.tz*t;
+    }
+    pos.needsUpdate=true;
+  });
+
+  // Defense node pulse
+  defNodes.forEach(n=>{
+    const p=.5+.5*Math.sin(bT*1.5+n.phase);
+    n.ring.scale.setScalar(.85+p*.4);
+    n.ring.material.opacity=.2+p*.5;
+  });
+
+  // Debris orbit and spin
+  debris.forEach(d=>{
+    d.userData.angle+=d.userData.speed;
+    d.position.x=Math.cos(d.userData.angle)*d.userData.radius;
+    d.position.z=Math.sin(d.userData.angle)*d.userData.radius;
+    d.rotation.x+=d.userData.rx;
+    d.rotation.y+=d.userData.ry;
+  });
+
+  // Rings spin
+  rings[0].rotation.z=bT*.15+sp*.8;
+  rings[1].rotation.z=-bT*.1+sp*.5;
+  rings[2].rotation.z=bT*.2;
+
+  // Camera mouse parallax + scroll zoom
+  camera.position.z=22-sp*6;
+  camera.position.x+=(bSMX*2-camera.position.x)*.02;
+  camera.position.y+=(2-bSMY*2-camera.position.y)*.02;
+  camera.lookAt(0,-1,0);
+  renderer.render(scene,camera);
+})();
+
+window.addEventListener('resize',()=>{
+  renderer.setSize(innerWidth,innerHeight);
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+},{passive:true});
+</script>
+</body>
+</html>
