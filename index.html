@@ -17,36 +17,24 @@
    DARK:  #1F3235 bg · #5E8779 green · #E6EAD7 text
    LIGHT: #EFDFCE bg · #7E041D burgundy · #363636 text
 ════════════════════════════════════════════ */
-:root,[data-theme="dark"]{
-  --bg:    #1A2C2F;
-  --bg2:   #142224;
-  --bg3:   #1F3235;
-  --bg4:   #243C40;
-  --surface:#243C40;
-  --text:  #E6EAD7;
-  --text2: #B8BCA8;
-  --text3: #7A8C80;
-  --accent:#B83A2D;
-  --accent2:#D04535;
-  --green: #5E8779;
-  --green2:#7AA898;
-  --border:rgba(230,234,215,.09);
-  --border2:rgba(230,234,215,.22);
-  /* True glass — tinted frosted panels */
-  --glass-bg:rgba(31,50,53,.48);
-  --glass-bg2:rgba(20,34,36,.62);
-  --glass-bg3:rgba(15,26,28,.78);
-  --glass-border:rgba(230,234,215,.16);
-  --glass-shine:linear-gradient(135deg,rgba(230,234,215,.12) 0%,rgba(230,234,215,.0) 60%);
-  --glass-glow-green:rgba(94,135,121,.15);
-  --glass-glow-red:rgba(184,58,45,.18);
-  --glass-radius:16px;
-  --shadow-glass:0 8px 32px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.2);
-  --shadow-glass-hover:0 20px 56px rgba(0,0,0,.45),0 4px 16px rgba(0,0,0,.3);
+:root{
+  /* OPTION 3 — Ultra Dark Teal + Red as True Primary */
+  --bg:#060F10; --bg2:#0A1618; --bg3:#0E1E20; --bg4:#122428;
+  --surface:#122428;
+  --text:#E8EDE6; --text2:#9AADA8; --text3:#506860;
+  --accent:#B83A2D; --accent2:#D04535;
+  --green:#2A5A52; --green2:#3A7A70;
+  --border:rgba(232,237,230,.06); --border2:rgba(232,237,230,.18);
+  --glass-bg:rgba(6,15,16,.55); --glass-bg2:rgba(4,10,11,.72); --glass-bg3:rgba(2,6,7,.88);
+  --glass-border:rgba(184,58,45,.25);
+  --glass-shine:linear-gradient(135deg,rgba(184,58,45,.1) 0%,rgba(232,237,230,.03) 60%);
+  --glass-glow-green:rgba(42,90,82,.2); --glass-glow-red:rgba(184,58,45,.28);
+  --shadow-glass:0 8px 32px rgba(0,0,0,.6),0 2px 8px rgba(0,0,0,.4);
+  --shadow-hover:0 20px 56px rgba(184,58,45,.22),0 4px 16px rgba(0,0,0,.5);
   --cond:'Barlow Condensed',sans-serif;
+  --display:'Big Shoulders Display','Barlow Condensed',sans-serif;
   --syne:'Syne',sans-serif;
   --mono:'Space Mono',monospace;
-  --display:'Big Shoulders Display','Barlow Condensed',sans-serif;
   color-scheme:dark;
 }
 
@@ -825,6 +813,10 @@ footer{
   .cm-right{padding:2rem}
   .cm-row{grid-template-columns:1fr}
 }
+
+100%{transform:translateX(-50%)}
+}
+
 </style>
 </head>
 <body>
@@ -892,7 +884,7 @@ footer{
       </div>
     </div>
     <div class="hero-chips">
-      <span class="chip">ISC2 CC</span><span class="chip">Azure AZ-500</span><span class="chip">Splunk SIEM</span><span class="chip">THM Top 1%</span><span class="chip">MITRE ATT&amp;CK</span><span class="chip">AD Pentesting</span><span class="chip">SOC Level 1</span><span class="chip">17+ Certs</span>
+      <span class="chip">ISC2 CC</span><span class="chip">Azure AZ-500</span><span class="chip">Splunk SIEM</span><span class="chip">THM Top 1%</span><span class="chip">MITRE ATT&amp;CK</span><span class="chip">AD Pentesting</span><span class="chip">SOC Level 2</span><span class="chip">17+ Certs</span>
     </div>
   </div>
 
@@ -908,7 +900,6 @@ footer{
 
 <!-- ABOUT -->
 <section class="content" id="about">
-  <div class="sec-bg-text">ABOUT</div>
   <div class="sec-hd reveal"><div class="sec-num">02</div><div class="sec-title">ABOUT</div><div class="sec-line"></div></div>
   <div class="about-grid reveal">
     <div class="ag ag1"><div class="ag-lbl">OPERATOR PROFILE</div><p class="ag-p">Cybersecurity Analyst and Incident Responder with <strong>hands-on experience across red &amp; blue operations</strong>. I operate from both sides of the breach — designing Active Directory attack chains, then building the detection logic to catch them.</p><br><p class="ag-p">Developed <strong>SOC playbooks</strong>, managed incident response at Optimiza and AIG, and built security automation tools deployed in real environments.</p></div>
@@ -922,28 +913,11 @@ footer{
 <!-- SKILLS -->
 <section id="skills">
   <div class="sec-hd reveal" style="padding:0 4rem;margin-bottom:3rem"><div class="sec-num">03</div><div class="sec-title">ARSENAL</div><div class="sec-line"></div></div>
-  <div class="skills-marquee-wrap">
-    <div class="skills-marquee">
-      <span class="sm-word">THREAT DETECTION</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">ACTIVE DIRECTORY</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">NETWORK FORENSICS</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">THREAT HUNTING</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">CLOUD SECURITY</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">INCIDENT RESPONSE</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">THREAT DETECTION</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">ACTIVE DIRECTORY</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">NETWORK FORENSICS</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">THREAT HUNTING</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">CLOUD SECURITY</span><span class="sm-dot">&middot;</span>
-      <span class="sm-word">INCIDENT RESPONSE</span><span class="sm-dot">&middot;</span>
-    </div>
-  </div>
   <div class="skills-track-wrap"><div class="skills-track" id="skillsTrack"></div></div>
 </section>
 
 <!-- CERTS -->
 <section class="content" id="certs">
-  <div class="sec-bg-text">CERTS</div>
   <div class="sec-hd reveal"><div class="sec-num">04</div><div class="sec-title">CLEARANCES</div><div class="sec-line"></div></div>
   <div class="cert-flip-grid">
     <div class="cert-flip feat"><div class="cert-flip-inner"><div class="cert-front"><div class="cf-issuer">ISC2</div><div class="cf-name">Certified in Cybersecurity (CC)</div><div class="cf-date">MAY 2025 · EXPIRES 2028</div></div><div class="cert-back"><div class="cb-check">✓</div><div class="cb-icon">CC</div><div class="cb-lbl">Verified · Active</div></div></div></div>
@@ -967,7 +941,6 @@ footer{
 
 <!-- EXPERIENCE -->
 <section class="content" id="experience">
-  <div class="sec-bg-text">EXP</div>
   <div class="sec-hd reveal"><div class="sec-num">05</div><div class="sec-title">EXPERIENCE</div><div class="sec-line"></div></div>
   <div class="exp-wrap reveal">
     <div class="exp-main">
@@ -989,7 +962,6 @@ footer{
 
 <!-- PROJECTS -->
 <section class="content" id="projects">
-  <div class="sec-bg-text">OPS</div>
   <div class="sec-hd reveal"><div class="sec-num">06</div><div class="sec-title">OPERATIONS</div><div class="sec-line"></div></div>
   <div class="proj-grid reveal">
     <div class="pc pc1"><div class="pc-num">01</div><div class="pc-type">SOC Automation · Active Directory</div><div class="pc-title">AD &amp; SOC Automation Lab</div><div class="pc-desc">Cloud-based mini SOC with Active Directory, Splunk Enterprise, and Shuffle SOAR. Detected unauthorized RDP attempts and automated full response workflows.</div><a href="https://github.com/dragonwaste" target="_blank" rel="noopener noreferrer" class="pc-lnk">GitHub Repo →</a></div>
@@ -1034,7 +1006,7 @@ footer{
         <div class="cml-name">MOHAMMAD<br>ALAGHAWANI</div>
         <div class="cml-role">CYBERSECURITY ANALYST · SOC OPERATOR</div>
         <div class="cml-bio">Open to SOC analyst roles, security consulting, freelance research, and CTF collaborations. Response within 24 hours.</div>
-        <div class="cml-chips"><span class="cml-chip">Top 1% THM</span><span class="cml-chip">ISC2 CC</span><span class="cml-chip">AZ-500</span><span class="cml-chip">SOC L1</span><span class="cml-chip">17+ Certs</span></div>
+        <div class="cml-chips"><span class="cml-chip">Top 1% THM</span><span class="cml-chip">ISC2 CC</span><span class="cml-chip">AZ-500</span><span class="cml-chip">SOC L2</span><span class="cml-chip">17+ Certs</span></div>
       </div>
       <div class="cml-links">
         <a class="cml-link" href="mailto:mohammadalaghawani5@gmail.com"><div class="cml-link-ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></div><div><div class="cml-link-lbl">Email</div><div class="cml-link-val">mohammadalaghawani5@gmail.com</div></div></a>
@@ -1267,12 +1239,7 @@ window.addEventListener('scroll',()=>{
     sec.style.transform=`perspective(1400px) rotateX(${-(p-.5)*1.5}deg)`;
   });
 },{passive:true});
-/* Marquee hover reverse */
-const marqueeEl=document.querySelector('.skills-marquee');
-if(marqueeEl){
-  marqueeEl.addEventListener('mouseenter',()=>marqueeEl.style.animationDirection='reverse');
-  marqueeEl.addEventListener('mouseleave',()=>marqueeEl.style.animationDirection='normal');
-}
+
 /* Section parallax tilt */
 window.addEventListener('scroll',()=>{
   document.querySelectorAll('section.content').forEach(sec=>{
